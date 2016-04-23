@@ -10,7 +10,7 @@
 .all{
     margin:auto;
     background-color:#fff;
-    width:1000px;
+    width:1500px;
 }
 a{
     text-decoration:none;
@@ -32,7 +32,7 @@ a:hover{
     position: relative;
 }
 .main svg{
-    height: 300px;
+    height: 600px;
 }
 #cmd_console{
     width:100%;
