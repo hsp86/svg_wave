@@ -133,7 +133,7 @@ lin {2,1,3,60} 不带重复的垂直虚线
         }
         
         path_str = '<path d="'+ path_move_str + attr_d + '" style="fill:none;stroke:black;stroke-width:1;" />';
-        text_str = '<text x="' + (left_space-cmd_list[1].length*14) +'" y="' + (row_y-5) + '" style="stroke:black;stroke-width:1;font-size:14px;">'+cmd_list[1]+'</text>';
+        text_str = '<text x="' + (left_space-10) +'" y="' + (row_y-5) + '" style="stroke:black;stroke-width:1;font-size:14px;text-anchor:end;">'+cmd_list[1]+'</text>';
         
         $svg.html($svg.html()+path_str+text_str);
         row++;
@@ -183,7 +183,7 @@ lin {2,1,3,60} 不带重复的垂直虚线
 
         path1_str = '<path d="'+ path_move_str + attr_d1 + '" style="fill:none;stroke:black;stroke-width:1;" />';
         path2_str = '<path d="'+ path_move_str + attr_d2 + '" style="fill:none;stroke:black;stroke-width:1;" />';
-        text_str = '<text x="' + (left_space-cmd_list[1].length*14) +'" y="' + (row_y-5) + '" style="stroke:black;stroke-width:1;font-size:14px;">'+cmd_list[1]+'</text>';
+        text_str = '<text x="' + (left_space-10) +'" y="' + (row_y-5) + '" style="stroke:black;stroke-width:1;font-size:14px;text-anchor:end;">'+cmd_list[1]+'</text>';
         
         $svg.html($svg.html()+path1_str+path2_str+text_str);
         row++;
