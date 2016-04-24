@@ -1,11 +1,8 @@
 $(function(){
     
     $clk = $('svg path');
-    $('#cmd_console').bind('keydown',function(event) {
-        res = true;
-        if(event.keyCode == 116)//f5
-        {
-            $('svg').html(' ');
+    $('#do_wave').bind('click', function(event) {
+        $('svg').html(' ');
             row = 1;
             console_list = $('#cmd_console').val().split('\n');
             for(k=0;k<console_list.length;k++)
@@ -29,6 +26,12 @@ $(function(){
                         break;
                 }
             }
+    });
+    $('#cmd_console').bind('keydown',function(event) {
+        res = true;
+        if(event.keyCode == 116)//f5
+        {
+            $('#do_wave').click();
             res = false;
         }
         return res;
