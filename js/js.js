@@ -1,20 +1,18 @@
 $(function(){
     
     $clk = $('svg path');
-    $('#cmd_console').bind('keydown',function(event) {
-        res = true;
-        if(event.keyCode == 116)//f5
-        {
-            $('svg').html(' ');
+    $('#do_wave').bind('click', function(event) {
+        $('svg').html(' ');
             row = 1;
             console_list = $('#cmd_console').val().split('\n');
             for(k=0;k<console_list.length;k++)
             {
-                switch(console_list[k].substr(0,3))
+                switch(console_list[k].substr(0,3).toLowerCase())
                 {
                     case 'def':
                         var_defined(console_list[k]);
                         break;
+                    case 'clk'://clk或sig都用signal_cmd2wave，内部识别clk和sig
                     case 'sig':
                         signal_cmd2wave($('svg'),console_list[k]);
                         break;
@@ -29,6 +27,12 @@ $(function(){
                         break;
                 }
             }
+    });
+    $('#cmd_console').bind('keydown',function(event) {
+        res = true;
+        if(event.keyCode == 116)//f5
+        {
+            $('#do_wave').click();
             res = false;
         }
         return res;
@@ -62,7 +66,7 @@ lin {2,1,3,60} 不带重复的垂直虚线
     function var_defined(cmd_str)
     {
         cmd_list = cmd_str.split(' ');
-        switch(cmd_list[1])
+        switch(cmd_list[1].toLowerCase())
         {
             case 'left_space':
                 left_space = parseInt(cmd_list[2]);
@@ -84,10 +88,11 @@ lin {2,1,3,60} 不带重复的垂直虚线
                 break;
         }
     }
-
+    // 绘制信号，clk:上下沿为垂直线;sig:上下沿为斜线
     function signal_cmd2wave($svg,cmd_str)
     {
         // cmd_list = cmd_str.split(' ',4);
+        cmd_text = cmd_str.substr(0,3).toLowerCase();
         cmd_list = cmd_str.split(' ');
         cmd_len = cmd_list.length;
         first_h = false;
@@ -111,7 +116,14 @@ lin {2,1,3,60} 不带重复的垂直虚线
                 {
                     v_num = preci[1];
                 }
-                sig_d = sig_d + ' v ' + v_num + ' h ' + (parseInt(sig_list[j])*preci[0]);
+                if(cmd_text == 'clk')
+                {
+                    sig_d = sig_d + ' v ' + v_num + ' h ' + (parseInt(sig_list[j])*preci[0]);
+                }
+                else// if(cmd_text == 'sig')//若不为clk就以斜线代替垂线
+                {
+                    sig_d = sig_d + ' l ' + preci[0]/2 + ',' + v_num + ' h ' + (parseInt(sig_list[j])*preci[0]-preci[0]/2);
+                }
             }
             repeat_num = parseInt(cmd_list[i]);//取前面的重复次数
             repeat_d = sig_d;
@@ -138,6 +150,7 @@ lin {2,1,3,60} 不带重复的垂直虚线
         $svg.html($svg.html()+path_str+text_str);
         row++;
     }
+    
     function bus_cmd2wave($svg,cmd_str)
     {
         cmd_list = cmd_str.split(' ');
@@ -156,13 +169,13 @@ lin {2,1,3,60} 不带重复的垂直虚线
                 y_num = preci[1]/2
                 if(sig_list[j][sig_list[j].length-1].toLowerCase() == 'v')//逗号分隔的数字后的字符表示v或z
                 {
-                    sig_d1 = sig_d1 + 'l ' + preci[0]/2 + ',' + -y_num + 'l ' + x_num + ',0 l ' + preci[0]/2 + ',' + y_num;
-                    sig_d2 = sig_d2 + 'l ' + preci[0]/2 + ',' + y_num + 'l ' + x_num + ',0 l ' + preci[0]/2 + ',' + -y_num;
+                    sig_d1 = sig_d1 + 'l ' + preci[0]/2 + ',' + -y_num + 'l ' + (x_num-preci[0]) + ',0 l ' + preci[0]/2 + ',' + y_num;
+                    sig_d2 = sig_d2 + 'l ' + preci[0]/2 + ',' + y_num + 'l ' + (x_num-preci[0]) + ',0 l ' + preci[0]/2 + ',' + -y_num;
                 }
                 else
                 {
-                    sig_d1 = sig_d1 + 'l ' + (x_num+1) + ',0';//不为v就默认为z
-                    sig_d2 = sig_d2 + 'l ' + (x_num+1) + ',0';
+                    sig_d1 = sig_d1 + 'l ' + x_num + ',0';//不为v就默认为z
+                    sig_d2 = sig_d2 + 'l ' + x_num + ',0';
                 }
             }
             repeat_num = parseInt(cmd_list[i]);//取前面的重复次数
@@ -198,14 +211,13 @@ lin {2,1,3,60} 不带重复的垂直虚线
     {
         cmd_list = cmd_str.split(' ');
         sig_list = cmd_list[1].substring(cmd_list[1].indexOf('{')+1,cmd_list[1].indexOf('}')).split(',');
-        i = 0;
         repeat_num = parseInt(cmd_list[1]);//取前面的重复次数
         x1 = left_space+sig_list[0]*preci[0];
-        y1 = top_space+parseInt(sig_list[1])*(preci[1]+spacing);
+        y1 = top_space+parseInt(sig_list[1])*(preci[1]+spacing)-preci[1]/2;
         x2 = x1;
-        y2 = top_space+parseInt(sig_list[2])*(preci[1]+spacing);
+        y2 = top_space+parseInt(sig_list[2])*(preci[1]+spacing)-preci[1]/2;
         line_str = '<line x1="'+ x1 +'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke-width:1;stroke:black;stroke-dasharray:2,2;" />'
-        while(repeat_num > i)
+        while(repeat_num > 1)
         {
             x1 = x1 + parseInt(sig_list[3])*preci[0];
             x2 = x1;
