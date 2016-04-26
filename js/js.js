@@ -226,4 +226,5 @@ lin {2,1,3,60} 不带重复的垂直虚线
         }
         $svg.html($svg.html()+line_str);
     }
+    $('#do_wave').click();//加载网页完成后绘制默认波形
 })
