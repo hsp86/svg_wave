@@ -1,5 +1,8 @@
 # svg_wave
+
 使用svg绘制波形
+
+> 在线使用：<https://hsp86.github.io/svg_wave/>
 
 打开本目录中index.html在网页底部文本框中写入代码来绘制波形图
 
